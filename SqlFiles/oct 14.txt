@@ -1,9 +1,0 @@
-ALTER TABLE `vistalkdb`.`userreport` 
-ADD COLUMN `hasResponded` BIT(1) NOT NULL DEFAULT 0 AFTER `reportText`;
-
-ALTER TABLE `vistalkdb`.`dailytasktype` 
-ADD COLUMN `isImplemented` BIT(1) NOT NULL DEFAULT 1 AFTER `powerupId`;
-
-ALTER TABLE `vistalkdb`.`dailytask`
-ADD CONSTRAINT fk_taskType
-FOREIGN KEY (taskTypeId) REFERENCES dailytasktype(id);
