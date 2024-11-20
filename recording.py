@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from db import CPhase1, get_db_connection
+from db import get_db_connection
 import random
 from setup import upload_media
 
