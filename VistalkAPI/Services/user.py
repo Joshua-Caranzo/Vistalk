@@ -1,12 +1,12 @@
 
 import jwt
 from datetime import datetime, timedelta, timezone, date
-from flask import request, jsonify, send_from_directory
+from flask import request, jsonify
 import hashlib
 from Services import emailService
-from db import SECRET_KEY , get_db_connection, UserImages
+from db import SECRET_KEY , get_db_connection
 import os
-
+from setup import upload_media
 def generate_token(user_name):
     expiration_time = datetime.now(timezone.utc) + timedelta(days=1)
     token = jwt.encode({
@@ -479,17 +479,9 @@ def editVistaProfile():
         cursor.execute(update_query, (name, email, userID))
         print("next here")
         if(file != None):
-            user_images_dir = UserImages
-            if not os.path.exists(user_images_dir):
-                os.makedirs(user_images_dir)
-            
-            file_extension = os.path.splitext(file.filename)[1]
-            new_file_name = f"{name}_{userID}{file_extension}"
-            file_path = os.path.join(user_images_dir, new_file_name)
-            
-            with open(file_path, 'wb') as f:
-                f.write(file.read())
-            
+            result = upload_media(file)
+            new_file_name = result
+           
             image_update_query = """
                 UPDATE user
                 SET ImagePath = %s
@@ -649,10 +641,3 @@ def getUserDetails():
         'data2': None,
         'totalCount': None 
     }), 200
-
-def getUserImage():
-    fileName = request.args.get('fileName')
-    try:
-        return send_from_directory(UserImages, fileName)
-    except FileNotFoundError:
-        return None

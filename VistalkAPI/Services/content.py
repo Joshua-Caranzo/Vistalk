@@ -1,16 +1,7 @@
 
-from flask import request, jsonify, send_from_directory
-import os
-from db import get_db_connection, PronunciationDirectory, SyllableDirectory
-import random
-import string
-import time
-
-PronunciationFolder = PronunciationDirectory
-Syllables =  SyllableDirectory
-
-if not os.path.exists(Syllables):
-    os.makedirs(Syllables)
+from flask import request, jsonify
+from db import get_db_connection
+from setup import upload_media
 
 def get_ContentTypes():
     conn = get_db_connection()
@@ -41,7 +32,6 @@ def save_content():
     language_id = int(request.form.get('languageId'))
     content_type_id = int(request.form.get('contentTypeId'))
     forPronunciation = request.form.get('forPronunciation')
-    print(forPronunciation)
     if(forPronunciation == 'false'):
             forPronunciation = 0
     else:
@@ -53,17 +43,11 @@ def save_content():
     else:
             is_indictionary = 1
 
-    safe_filename = f"{content_text.replace(' ', '_')}.wav"
-
-    audio_path = safe_filename
-
     audio_file = request.files.get('contentAudioFile')
-    audio_file_path = None
+    audio_path = request.form.get('audioPath')
     if audio_file:
-        if not os.path.exists(PronunciationFolder):
-            os.makedirs(PronunciationFolder)
-        audio_file_path = os.path.join(PronunciationFolder, safe_filename)
-        audio_file.save(audio_file_path)
+        result = upload_media(audio_file)
+        audio_path = result
 
     syllables_data = []
     index = 0
@@ -79,13 +63,12 @@ def save_content():
             'orderNumber': int(request.form.get(f'syllables[{index}].orderNumber')),
         }
         syllable_audio_file = request.files.get(f'syllables[{index}].audioFile')
+        syllable['audioPath'] = request.form.get(f'syllables[{index}].audioPath')
+
         if syllable_audio_file:
-            random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-            timestamp = int(time.time())
-            safe_filename = f"{syllable['syllableText'].replace(' ', '_')}_{timestamp}_{random_string}.wav"
-            syllable['audioPath'] = safe_filename
-            syllable_audio_path = os.path.join(Syllables, safe_filename)
-            syllable_audio_file.save(syllable_audio_path)
+            result = upload_media(syllable_audio_file)
+            syllable_audio_path = result
+            syllable['audioPath'] = syllable_audio_path
         syllables_data.append(syllable)
         index += 1
 
@@ -209,10 +192,8 @@ def save_content():
             
             existing_syllables = {syllable['id'] for syllable in syllables_data}
             cursor.execute("SELECT * FROM contentsyllable WHERE contentId = %s", (content_id,))
-            print(existing_syllables)
             stored_syllables = set()
             rows = cursor.fetchall()
-            print(rows)
 
             for row in rows:
                 try:
@@ -222,7 +203,6 @@ def save_content():
 
             for syllable in syllables_data:
                 if syllable['id'] in stored_syllables:
-                    print(syllable)
                     sql_update_syllable = """
                         UPDATE contentsyllable
                         SET syllableText = %s, audioPath = %s, orderNumber = %s
@@ -562,23 +542,20 @@ def getExamplesByContentId():
             }), 200
 
 def getFileByFileName():
-    fileName = request.args.get('fileName') 
-    isSyllable = request.args.get('isSyllable')
-
-    if isSyllable == 'true':
-        return send_from_directory(Syllables, fileName)
-    elif isSyllable == 'false':
-        return send_from_directory(PronunciationFolder, fileName)
+    file_url = request.args.get('fileName') 
+    
+    if not file_url:
+        return jsonify({"error": "fileName parameter is required"}), 400
+    
+    return jsonify({"file_url": file_url})
     
 def contentInactive():
     contentId = int(request.args.get('contentId')) 
-    print(contentId)
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     query = """
         UPDATE content SET isActive = false where contentID = %s
     """
-    print(query)
     values = [contentId,]
     cursor.execute(query, values)
     conn.commit()
@@ -586,13 +563,11 @@ def contentInactive():
 
 def sectionInactive():
     contentId = int(request.args.get('contentId')) 
-    print(contentId)
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     query = """
         UPDATE content SET isActive = false where contentID = %s
     """
-    print(query)
     values = [contentId,]
     cursor.execute(query, values)
     conn.commit()

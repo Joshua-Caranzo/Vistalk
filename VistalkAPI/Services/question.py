@@ -1,10 +1,8 @@
 # user.py
-from db import get_db_connection, QuestionFiles
-from flask import request, jsonify, send_from_directory
-import os
+from db import get_db_connection
+from flask import request, jsonify
 import uuid
-
-QuestionFiles =  QuestionFiles
+from setup import upload_media
 
 def get_QuestionTypes():
     conn = get_db_connection()
@@ -171,15 +169,13 @@ def save_questionMultiple():
             if image_path or audio_path:
 
                 if image_path:
-                    safe_filename = f"{uuid.uuid4().hex}.png"  # Generate a random filename for the image
-                    cursor.execute('UPDATE question SET imagePath = %s WHERE questionId = %s', (safe_filename, question_id))
-                    file_path = os.path.join(QuestionFiles, safe_filename)
-                    file.save(file_path)
+                    result = upload_media(file)
+                    audio_path = result
+                    cursor.execute('UPDATE question SET imagePath = %s WHERE questionId = %s', (audio_path, question_id))
                 elif audio_path:
-                    safe_filename = f"{uuid.uuid4().hex}.mp3"
-                    cursor.execute('UPDATE question SET audioPath = %s WHERE questionId = %s', (safe_filename, question_id))
-                    file_path = os.path.join(QuestionFiles, safe_filename)
-                    file.save(file_path)
+                    result = upload_media(file)
+                    audio_path = result
+                    cursor.execute('UPDATE question SET audioPath = %s WHERE questionId = %s', (audio_path, question_id))
 
         cursor.execute(
             '''
@@ -211,20 +207,15 @@ def save_questionMultiple():
             if image_path or audio_path:
 
                 if image_path:
-                    print(question_ID)
-                    safe_filename = f"{uuid.uuid4().hex}.png"  # Random filename for updated image
-                    cursor.execute('UPDATE question SET imagePath = %s, audioPath = null WHERE questionId = %s', (safe_filename, question_ID))
-                    conn.commit()
-                    file_path = os.path.join(QuestionFiles, safe_filename)
-                    file.save(file_path)
+                    result = upload_media(file)
+                    audio_path = result
+                    cursor.execute('UPDATE question SET imagePath = %s, audioPath = null WHERE questionId = %s', (audio_path, question_ID))
                 elif audio_path:
-                    print(question_ID)
-                    safe_filename = f"{uuid.uuid4().hex}.mp3"  # Random filename for updated audio
-                    print(safe_filename)
-                    cursor.execute('UPDATE question SET audioPath = %s, imagePath = null WHERE questionId = %s', (safe_filename, question_ID))
-                    conn.commit()
-                    file_path = os.path.join(QuestionFiles, safe_filename)
-                    file.save(file_path)
+                    result = upload_media(file)
+                    audio_path = result
+                    cursor.execute('UPDATE question SET audioPath = %s, imagePath = null WHERE questionId = %s', (audio_path, question_ID))
+            conn.commit()
+
 
     conn.close()
     return jsonify({'message': 'Question and choices saved successfully.'}), 200
@@ -397,7 +388,3 @@ def questionInactive():
     conn.commit()
 
     return jsonify({'isSuccess': True, "message": "Content updated successfully"}), 200
-
-def getQuestionFile():
-    fileName = request.args.get('fileName')
-    return send_from_directory(QuestionFiles, fileName)

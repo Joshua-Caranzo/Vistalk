@@ -1,16 +1,14 @@
-from flask import request, jsonify, send_from_directory
+from flask import request, jsonify
 import os
-from db import get_db_connection, ItemImage, BackGroundMusicDirectory
-
-ItemImage = ItemImage
-BackGroundMusicDirectory = BackGroundMusicDirectory
+from db import get_db_connection
+from setup import upload_media
 
 def save_item():
     conn = get_db_connection()
     cursor = conn.cursor()
 
     item_typeId = int(request.form.get('itemTypeID'))
-    item_id = request.form.get('itemID')  # Check if an itemID is provided for updates
+    item_id = request.form.get('itemID') 
     is_update = item_id is not None and item_id != '0'
 
     if is_update:
@@ -34,14 +32,12 @@ def save_item():
             isImplemented = 0
         else:
             isImplemented = 1
-        safe_filename = f"{item_name.replace(' ', '_')}.png"
+        
         image_file = request.files.get('itemImageFile')
-
+        audio_file_path =request.form.get('filePath')
         if image_file:
-            if not os.path.exists(ItemImage):
-                os.makedirs(ItemImage)
-            image_file_path = os.path.join(ItemImage, safe_filename)
-            image_file.save(image_file_path)
+            result = upload_media(image_file)
+            audio_file_path = result
 
         if is_update:
             sql_content = """
@@ -52,7 +48,7 @@ def save_item():
             cursor.execute(sql_content, (
                 vcoin_price,
                 is_premium,
-                safe_filename,
+                audio_file_path,
                 item_id
             ))
 
@@ -67,6 +63,7 @@ def save_item():
                 isImplemented,
                 item_id
             ))
+            conn.commit()
 
         else:
             # Insert new item and powerUp records
@@ -78,7 +75,7 @@ def save_item():
                 item_typeId,
                 vcoin_price,
                 is_premium,
-                safe_filename
+                audio_file_path
             ))
             conn.commit()
             item_id = cursor.lastrowid
@@ -92,75 +89,6 @@ def save_item():
                 item_name,
                 description,
                 isImplemented
-            ))
-
-    elif item_typeId == 2:
-        vcoin_price = float(request.form.get('vcoinPrice'))
-        is_premium = request.form.get('isPremium')
-        musicTitle = request.form.get('musicTitle')
-        musicGenre = request.form.get('musicGenre')
-        if is_premium == 'false':
-            is_premium = 0
-        else:
-            is_premium = 1
-
-        safe_filename = f"{musicTitle.replace(' ', '_')}.mp3"
-        audio_file = request.files.get('itemAudioFile')
-        print(audio_file)
-        if audio_file:
-            if not os.path.exists(BackGroundMusicDirectory):
-                os.makedirs(BackGroundMusicDirectory)
-            audio_file_path = os.path.join(BackGroundMusicDirectory, safe_filename)
-            audio_file.save(audio_file_path)
-
-        if is_update:
-            # Update existing item and backgroundMusic records
-            sql_content = """
-                UPDATE item
-                SET vcoinPrice = %s, isPremium = %s, filePath = %s
-                WHERE itemID = %s
-            """
-            cursor.execute(sql_content, (
-                vcoin_price,
-                is_premium,
-                safe_filename,
-                item_id
-            ))
-
-            sql_content = """
-                UPDATE backgroundMusic
-                SET musicTitle = %s, musicGenre = %s
-                WHERE itemID = %s
-            """
-            cursor.execute(sql_content, (
-                musicTitle,
-                musicGenre,
-                item_id
-            ))
-
-        else:
-            # Insert new item and backgroundMusic records
-            sql_content = """
-                INSERT INTO item (itemTypeID, vcoinPrice, isPremium, filePath)
-                VALUES (%s, %s, %s, %s)
-            """
-            cursor.execute(sql_content, (
-                item_typeId,
-                vcoin_price,
-                is_premium,
-                safe_filename
-            ))
-            conn.commit()
-            item_id = cursor.lastrowid
-
-            sql_content = """
-                INSERT INTO backgroundMusic (itemID, musicTitle, musicGenre)
-                VALUES (%s, %s, %s)
-            """
-            cursor.execute(sql_content, (
-                item_id,
-                musicTitle,
-                musicGenre
             ))
 
     elif item_typeId == 3:
@@ -194,9 +122,8 @@ def save_item():
                 price,
                 bagName
             ))
-
+    print(item_id)
     if not is_update and item_id is not None: 
-        print('here')
         cursor.execute("SELECT userID FROM user WHERE isActive = 1 and isPlayer = 1")
         active_users = cursor.fetchall()
 
@@ -212,7 +139,7 @@ def save_item():
         return jsonify({'isSuccess': True, "message": "Item saved successfully"}), 201
     
     else:
-        return jsonify({'isSuccess': False, "message": "Invalid itemTypeID provided"}), 400
+        return jsonify({'isSuccess': False, "message": "Invalid itemTypeID provided"}), 200
 
 def getItemType():
     con =get_db_connection()
@@ -358,15 +285,6 @@ def get_items():
         'data2': None,
         'totalCount': total_count
     }), 200
-
-def getShopFileByFileName():
-    fileName = request.args.get('fileName')
-    itemType = int(request.args.get('itemType'))
-    if itemType == 1:
-        print("here")
-        return send_from_directory(ItemImage, fileName)
-    if itemType == 2:
-        return send_from_directory(BackGroundMusicDirectory, fileName)
     
 def itemInactive():
     itemId = int(request.args.get('itemId')) 

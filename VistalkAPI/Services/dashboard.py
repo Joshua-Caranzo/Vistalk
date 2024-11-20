@@ -1,7 +1,7 @@
-from db import get_db_connection, PronunciationDirectory, SyllableDirectory
-from flask import request, jsonify, send_from_directory
+from db import get_db_connection
+from flask import request, jsonify
 import os
-from datetime import datetime, timedelta, timezone, date
+from datetime import datetime, timedelta, date
 
 def getLeaderBoards():
     granularity = request.args.get('granularity')  
