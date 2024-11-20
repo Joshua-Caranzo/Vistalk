@@ -3,7 +3,8 @@ import cloudinary
 
 def get_db_connection():
 	return mysql.connector.connect(
-		host="mysql.railway.internal",
+		host="junction.proxy.rlwy.net",  # Proxy URL
+        	port=52006,
 		user="root",
 		password="lTaYNRCJEpAYudgSYAGFkDXIXMDvFPmp",
 		database="railway",
