@@ -346,5 +346,6 @@ def getPronunciationProgress():
     return dashboard.getPronunciationProgress()
 
 if __name__ == "__main__":
-    app.run(debug=db.DEBUG, host=db.HOST, port=db.PORT)
+    app.run(debug=True, host="0.0.0.0", port=5000)
+
 
