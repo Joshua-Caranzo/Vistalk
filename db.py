@@ -7,7 +7,7 @@ def get_db_connection():
         	port=52006,
 		user="root",
 		password="lTaYNRCJEpAYudgSYAGFkDXIXMDvFPmp",
-		database="vistalk",
+		database="railway",
 	)
 
 HOST = '192.168.1.13'
