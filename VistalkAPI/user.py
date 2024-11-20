@@ -3,7 +3,7 @@ import jwt
 from datetime import datetime, timedelta, timezone, date
 from flask import request, jsonify
 import hashlib
-from Services import emailService
+import emailService
 from db import SECRET_KEY , get_db_connection
 import os
 from setup import upload_media

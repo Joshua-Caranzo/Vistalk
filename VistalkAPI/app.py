@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from Services import user, section, content, question, shop, emailService, feedback, report, dailytask,dashboard, recording
+import user, section, content, question, shop, emailService, feedback, report, dailytask,dashboard, recording
 import db
 from functools import wraps
 import jwt
