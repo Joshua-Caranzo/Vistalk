@@ -133,7 +133,7 @@ def getSubscriptionData():
                 MONTH(ct.transactionDate) AS month,
                 COUNT(ct.subscriptionID) AS subscriptionCount
             FROM 
-                coinTransaction ct
+                cointransaction ct
             INNER JOIN 
                 subscription s ON s.Id = ct.subscriptionId
             GROUP BY 
