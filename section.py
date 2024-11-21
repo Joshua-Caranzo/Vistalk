@@ -254,7 +254,7 @@ def unitInactive():
     cursor.execute(query_update, values)
 
     query_delete = """
-        DELETE FROM userUnit WHERE unitID = %s
+        DELETE FROM userunit WHERE unitID = %s
     """
     cursor.execute(query_delete, values)
 
