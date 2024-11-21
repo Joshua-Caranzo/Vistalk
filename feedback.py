@@ -58,8 +58,8 @@ def get_feedback():
     # Count total entries for pagination
     count_query = """
         SELECT COUNT(*) AS total
-        FROM vistalkdb.userfeedback uf
-        INNER JOIN vistalkdb.user u ON u.userId = uf.userPlayerID
+        FROM userfeedback uf
+        INNER JOIN user u ON u.userId = uf.userPlayerID
         WHERE 1 = 1
     """
     count_values = []
