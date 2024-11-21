@@ -27,7 +27,7 @@ def getLeaderBoards():
 
     query = """
         SELECT u.name, u.imagePath, 
-               (SELECT SUM(score) FROM dailyScore ds 
+               (SELECT SUM(score) FROM dailyscore ds 
                 WHERE ds.userPlayerId = v.userPlayerID 
                 AND ds.dateDaily BETWEEN %s AND %s) as totalScore 
         FROM vista v 
