@@ -126,7 +126,7 @@ def createVista():
         
         itemQuery = """
         SELECT i.itemId 
-        FROM powerUp p 
+        FROM powerup p 
         INNER JOIN item i ON i.itemID = p.itemId WHERE i.isActive = true
         """
         cursor.execute(itemQuery)
@@ -134,7 +134,7 @@ def createVista():
 
         for item in itemIds:
             userItemQuery = """
-            INSERT INTO userItem (userPlayerId, itemId, quantity) 
+            INSERT INTO useritem (userPlayerId, itemId, quantity) 
             VALUES (%s, %s, %s)
             """
             cursor.execute(userItemQuery, (userId, item['itemId'], 0))
@@ -151,7 +151,7 @@ def createVista():
             taskId = task['taskID']
             taskDate = task['taskDate']
             playerDailyTaskQuery = """
-            INSERT INTO playerDailyTask (taskId, userPlayerId, isCompleted, isClaimed) 
+            INSERT INTO playerdailytask (taskId, userPlayerId, isCompleted, isClaimed) 
             VALUES (%s, %s, %s, %s)
             """
             cursor.execute(playerDailyTaskQuery, (taskId, userId, 0, 0))
@@ -454,7 +454,7 @@ def get_Users():
 def get_UserPowerUps(userID):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    query = "SELECT p.name, ui.itemId, ui.quantity, i.filePath FROM powerUp p inner join userItem ui on ui.itemId = p.itemID inner join item i on i.itemID = ui.itemID WHERE userplayerID = %s AND isImplemented = true;"
+    query = "SELECT p.name, ui.itemId, ui.quantity, i.filePath FROM powerup p inner join useritem ui on ui.itemId = p.itemID inner join item i on i.itemID = ui.itemID WHERE userplayerID = %s AND isImplemented = true;"
     values = (userID,)
     cursor.execute(query, values)
     powerUps = cursor.fetchall()
@@ -615,7 +615,7 @@ def getUserDetails():
 
     
     score_query = """
-        SELECT dateDaily, score FROM dailyScore
+        SELECT dateDaily, score FROM dailyscore
         WHERE userPlayerId = %s AND dateDaily BETWEEN %s AND %s
         ORDER BY dateDaily ASC
     """
