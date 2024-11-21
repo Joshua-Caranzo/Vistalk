@@ -14,7 +14,7 @@ def save_content():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         query = """
-            INSERT INTO fileData (contentId, filePath, isAccepted, fileName) VALUES (%s, %s, %s, %s)
+            INSERT INTO filedata (contentId, filePath, isAccepted, fileName) VALUES (%s, %s, %s, %s)
         """
         values = [content_id, path, 0, path]
         cursor.execute(query, values)
@@ -34,7 +34,7 @@ def get_contents():
     cursor = conn.cursor(dictionary=True)
     query = """
         SELECT fd.*, c.contentText
-        FROM fileData fd inner join content c on c.contentID = fd.contentID where fd.isAccepted = 0 and fd.isRejected = 0
+        FROM filedata fd inner join content c on c.contentID = fd.contentID where fd.isAccepted = 0 and fd.isRejected = 0
         AND c.languageID = %s
     """
     values = [languageId,]
@@ -65,7 +65,7 @@ def acceptRecording():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     
-    update_query = "UPDATE fileData SET isAccepted = 1 WHERE id = %s"
+    update_query = "UPDATE filedata SET isAccepted = 1 WHERE id = %s"
     cursor.execute(update_query, (fileId,))
     conn.commit()
         
@@ -77,7 +77,7 @@ def rejectRecording():
     cursor = conn.cursor(dictionary=True)
     
     
-    update_query = "UPDATE fileData SET isRejected = 1 WHERE id = %s"
+    update_query = "UPDATE filedata SET isRejected = 1 WHERE id = %s"
     cursor.execute(update_query, (fileId,))
     conn.commit()
         
