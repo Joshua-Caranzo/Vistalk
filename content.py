@@ -6,7 +6,7 @@ from setup import upload_media
 def get_ContentTypes():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    query = "SELECT * FROM contentType"
+    query = "SELECT * FROM contenttype"
     cursor.execute(query)
     contentTypes = cursor.fetchall()
     if not contentTypes:
@@ -144,7 +144,7 @@ def save_content():
             
             for definition in definitions_data:
                 sql_definition = """
-                    INSERT INTO contentDefinition (contentId, nativeDefinition, englishDefinition, orderNumber)
+                    INSERT INTO contentdefinition (contentId, nativeDefinition, englishDefinition, orderNumber)
                     VALUES (%s, %s, %s, %s)
                 """
                 cursor.execute(sql_definition, (
@@ -158,7 +158,7 @@ def save_content():
             
             for example in examples_data:
                 sql_example = """
-                    INSERT INTO contentExample (contentId, nativeExample, englishExample, orderNumber)
+                    INSERT INTO contentexample (contentId, nativeExample, englishExample, orderNumber)
                     VALUES (%s, %s, %s, %s)
                 """
                 cursor.execute(sql_example, (
@@ -233,7 +233,7 @@ def save_content():
            
             
             existing_definitions = {definition['id'] for definition in definitions_data}
-            cursor.execute("SELECT * FROM contentDefinition WHERE contentId = %s", (content_id,))
+            cursor.execute("SELECT * FROM contentdefinition WHERE contentId = %s", (content_id,))
 
             stored_definitions = set()
             rows = cursor.fetchall()
@@ -246,7 +246,7 @@ def save_content():
             for definition in definitions_data:
                 if definition['id'] in stored_definitions:
                     sql_update_definition = """
-                        UPDATE contentDefinition
+                        UPDATE contentdefinition
                         SET nativeDefinition = %s, englishDefinition = %s, orderNumber = %s
                         WHERE contentId = %s
                     """
@@ -258,7 +258,7 @@ def save_content():
                     ))
                 else:
                     sql_insert_definition = """
-                        INSERT INTO contentDefinition (contentId, nativeDefinition, englishDefinition, orderNumber)
+                        INSERT INTO contentdefinition (contentId, nativeDefinition, englishDefinition, orderNumber)
                         VALUES (%s, %s, %s, %s)
                     """
                     cursor.execute(sql_insert_definition, (
@@ -269,13 +269,13 @@ def save_content():
                     ))
 
             for id in stored_definitions - existing_definitions:
-                cursor.execute("DELETE FROM contentDefinition WHERE id = %s", (id,))
+                cursor.execute("DELETE FROM contentdefinition WHERE id = %s", (id,))
 
             conn.commit()
 
             
             existing_examples = {example['id'] for example in examples_data}
-            cursor.execute("SELECT * FROM contentExample WHERE contentId = %s", (content_id,))
+            cursor.execute("SELECT * FROM contentexample WHERE contentId = %s", (content_id,))
 
             stored_examples = set()
             rows = cursor.fetchall()
@@ -288,7 +288,7 @@ def save_content():
             for example in examples_data:
                 if example['id'] in stored_examples:
                     sql_update_example = """
-                        UPDATE contentExample
+                        UPDATE contentexample
                         SET nativeExample = %s, englishExample = %s, orderNumber = %s
                         WHERE contentId = %s
                     """
@@ -300,7 +300,7 @@ def save_content():
                     ))
                 else:
                     sql_insert_example = """
-                        INSERT INTO contentExample (contentId, nativeExample, englishExample, orderNumber)
+                        INSERT INTO contentexample (contentId, nativeExample, englishExample, orderNumber)
                         VALUES (%s, %s, %s, %s)
                     """
                     cursor.execute(sql_insert_example, (
@@ -311,7 +311,7 @@ def save_content():
                     ))
 
             for id in stored_examples - existing_examples:
-                cursor.execute("DELETE FROM contentExample WHERE id = %s", (id,))
+                cursor.execute("DELETE FROM contentexample WHERE id = %s", (id,))
 
             conn.commit()
 
@@ -465,7 +465,7 @@ def getSyllablesByContentId():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     query = """
-        SELECT * FROM contentSyllable where contentID = %s
+        SELECT * FROM contentsyllable where contentID = %s
     """
     values = [contentId,]
 
@@ -492,7 +492,7 @@ def getDefinitionByContentId():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     query = """
-        SELECT * FROM contentDefinition where contentID = %s
+        SELECT * FROM contentdefinition where contentID = %s
     """
     values = [contentId,]
 
@@ -519,7 +519,7 @@ def getExamplesByContentId():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     query = """
-        SELECT * FROM contentExample where contentID = %s
+        SELECT * FROM contentexample where contentID = %s
     """
     values = [contentId,]
 
