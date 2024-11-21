@@ -152,7 +152,7 @@ def save_units():
         unitID = cursor.lastrowid  
 
             
-        queryUsers = "SELECT userPlayerId FROM Vista"
+        queryUsers = "SELECT userPlayerId FROM vista"
         cursor.execute(queryUsers)
         users = cursor.fetchall()
         isLocked = True if unitNumber > 1 else False
