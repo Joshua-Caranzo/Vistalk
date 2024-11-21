@@ -53,7 +53,7 @@ def save_item():
             ))
 
             sql_content = """
-                UPDATE powerUp
+                UPDATE powerup
                 SET name = %s, description = %s, isImplemented = %s
                 WHERE itemID = %s
             """
@@ -81,7 +81,7 @@ def save_item():
             item_id = cursor.lastrowid
 
             sql_content = """
-                INSERT INTO powerUp (itemID, name, description, isImplemented)
+                INSERT INTO powerup (itemID, name, description, isImplemented)
                 VALUES (%s, %s, %s, %s)
             """
             cursor.execute(sql_content, (
@@ -100,7 +100,7 @@ def save_item():
         if item_id != 0:
             # Update existing coinBag record
             sql_content = """
-                UPDATE coinBag
+                UPDATE coinbag
                 SET quantity = %s, moneyPrice = %s, coinBagName = %s
                 WHERE coinBagId = %s
             """
@@ -114,7 +114,7 @@ def save_item():
         else:
             # Insert new coinBag record
             sql_content = """
-                INSERT INTO coinBag (quantity, moneyPrice, coinBagName)
+                INSERT INTO coinbag (quantity, moneyPrice, coinBagName)
                 VALUES (%s, %s, %s)
             """
             cursor.execute(sql_content, (
@@ -131,7 +131,7 @@ def save_item():
             (user[0], item_id, 0) for user in active_users
         ]
         cursor.executemany(
-            "INSERT INTO userItem (userPlayerID, itemID, quantity) VALUES (%s, %s, %s)",
+            "INSERT INTO useritem (userPlayerID, itemID, quantity) VALUES (%s, %s, %s)",
             user_item_inserts
         )
 
@@ -181,7 +181,7 @@ def get_items():
         query = """
             SELECT i.*, pu.name, pu.description, pu.isImplemented
             FROM item i
-            INNER JOIN powerUp pu ON pu.itemID = i.itemID 
+            INNER JOIN powerup pu ON pu.itemID = i.itemID 
             WHERE i.isActive = true
         """
         if searchString:
@@ -194,7 +194,7 @@ def get_items():
         query = """
             SELECT i.*, mu.musicTitle, mu.musicGenre 
             FROM item i
-            INNER JOIN backgroundMusic mu ON mu.itemID = i.itemID 
+            INNER JOIN backgroundmusic mu ON mu.itemID = i.itemID 
             WHERE i.isActive = true
         """
         if searchString:
@@ -206,7 +206,7 @@ def get_items():
         # Select from coinBag table instead of item
         query = """
             SELECT cb.* 
-            FROM coinBag cb
+            FROM coinbag cb
             WHERE cb.isActive = true
         """
         if searchString:
@@ -240,7 +240,7 @@ def get_items():
         count_query = """
             SELECT COUNT(*) as total 
             FROM item i 
-            INNER JOIN powerUp pu ON pu.itemID = i.itemID 
+            INNER JOIN powerup pu ON pu.itemID = i.itemID 
             WHERE i.isActive = true
         """
         if searchString:
@@ -250,7 +250,7 @@ def get_items():
         count_query = """
             SELECT COUNT(*) as total 
             FROM item i 
-            INNER JOIN backgroundMusic mu ON mu.itemID = i.itemID 
+            INNER JOIN backgroundmusic mu ON mu.itemID = i.itemID 
             WHERE i.isActive = true
         """
         if searchString:
@@ -303,7 +303,7 @@ def coinBagInactive():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     query = """
-        UPDATE coinBag SET isActive = false where coinBagId = %s
+        UPDATE coinbag SET isActive = false where coinBagId = %s
     """
     values = [itemId,]
     cursor.execute(query, values)
