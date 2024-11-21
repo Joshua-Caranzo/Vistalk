@@ -141,7 +141,7 @@ def createVista():
         
         today = datetime.now().date()
         dailyTaskQuery = """
-        SELECT taskID, taskDate  FROM dailyTask 
+        SELECT taskID, taskDate  FROM dailytask 
         WHERE taskDate >= %s
         """
         cursor.execute(dailyTaskQuery, (today,))
