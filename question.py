@@ -179,7 +179,7 @@ def save_questionMultiple():
 
         cursor.execute(
             '''
-            INSERT INTO questionChoice (questionID, choice1, choice2, choice3, choice4, correctChoice)
+            INSERT INTO questionchoice (questionID, choice1, choice2, choice3, choice4, correctChoice)
             VALUES (%s, %s, %s, %s, %s, %s)
             ''',
             (question_id, *choices, correct_choice)
@@ -193,7 +193,7 @@ def save_questionMultiple():
 
         cursor.execute(
             """
-            UPDATE questionChoice 
+            UPDATE questionchoice 
             SET choice1 = %s, choice2 = %s, choice3 = %s, choice4 = %s, correctChoice = %s 
             WHERE questionID = %s
             """,
