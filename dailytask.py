@@ -96,7 +96,7 @@ def get_dailytask():
 def get_DailyTaskType():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    query = "SELECT * FROM dailytasktype"
+    query = "SELECT * FROM dailytasktype WHERE isImplemented = 1"
     cursor.execute(query)
     dailyTaskTypes = cursor.fetchall()
     if not dailyTaskTypes:
