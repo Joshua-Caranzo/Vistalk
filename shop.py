@@ -255,7 +255,7 @@ def get_items():
     elif itemTypeID == '3':
         count_query = """
             SELECT COUNT(*) as total 
-            FROM coinBag cb 
+            FROM coinbag cb 
             WHERE cb.isActive = true
         """
         if searchString:
