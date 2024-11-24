@@ -31,8 +31,8 @@ def save_section():
     cursor = conn.cursor()
     if(section_id == 0 or section_id is None):
 
-        query = "SELECT * FROM section WHERE sectionNumber = %s"
-        cursor.execute(query, (section_number,))
+        query = "SELECT * FROM section WHERE sectionNumber = %s and languageId = %s"
+        cursor.execute(query, (section_number,langID))
         existing_section = cursor.fetchone()
         if existing_section:
             return jsonify({
