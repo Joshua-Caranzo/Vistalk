@@ -122,8 +122,7 @@ def save_item():
                 price,
                 bagName
             ))
-    print(item_id)
-    if not is_update and item_id is not None: 
+    if not is_update and item_id is not None and item_typeId == 1: 
         cursor.execute("SELECT userID FROM user WHERE isActive = 1 and isPlayer = 1")
         active_users = cursor.fetchall()
 
@@ -135,11 +134,8 @@ def save_item():
             user_item_inserts
         )
 
-        conn.commit()
-        return jsonify({'isSuccess': True, "message": "Item saved successfully"}), 201
-    
-    else:
-        return jsonify({'isSuccess': False, "message": "Invalid itemTypeID provided"}), 200
+    conn.commit()
+    return jsonify({'isSuccess': True, "message": "Item saved successfully"}), 201
 
 def getItemType():
     con =get_db_connection()
