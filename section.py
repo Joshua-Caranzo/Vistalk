@@ -31,7 +31,7 @@ def save_section():
     cursor = conn.cursor()
     if(section_id == 0 or section_id is None):
 
-        query = "SELECT * FROM section WHERE sectionNumber = %s and languageId = %s"
+        query = "SELECT * FROM section WHERE sectionNumber = %s and languageId = %s and isActive = 1"
         cursor.execute(query, (section_number,langID))
         existing_section = cursor.fetchone()
         if existing_section:
@@ -49,7 +49,7 @@ def save_section():
         """
         values = (section_number, title, is_premium, description, langID)
     else:
-        query = "SELECT * FROM section WHERE sectionNumber = %s AND sectionId != %s and languageId = %s"
+        query = "SELECT * FROM section WHERE sectionNumber = %s AND sectionId != %s and languageId = %s and isActive = 1"
         cursor.execute(query, (section_number, section_id, langID))
         conflicting_section = cursor.fetchone()
         if conflicting_section:
