@@ -7,6 +7,7 @@ def get_feedback():
     pageNo = int(request.args.get('pageNo', 1))
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
+    print(endDate)
     pageSize = 15
     offset = (pageNo - 1) * pageSize
     
@@ -34,6 +35,7 @@ def get_feedback():
             # Validate dates
             start_date = datetime.strptime(startDate, '%Y-%m-%d')
             end_date = datetime.strptime(endDate, '%Y-%m-%d')
+            print(endDate)
             query += " AND uf.feedbackDate BETWEEN %s AND %s"
             values.extend([start_date, end_date])
         except ValueError:
