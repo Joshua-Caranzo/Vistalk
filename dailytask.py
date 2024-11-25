@@ -210,6 +210,8 @@ def deleteDailyTask():
             WHERE taskID = %s
         """
         cursor.execute(sql_delete_playerdailytask, (task_id,))
+        conn.commit()
+
         if cursor.rowcount == 0:
             print(f"No records found in playerdailytask for taskID {task_id}")
         
