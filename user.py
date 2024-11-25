@@ -633,6 +633,8 @@ def getUserDetails():
 
     userProfile['weeklyScoreGraph'] = week_scores
     userProfile['totalWeeklyScore'] = total_weekly_score
+    print(total_weekly_score)
+    print(userProfile['totalWeeklyScore'])
 
     return jsonify({
         'isSuccess': True,
