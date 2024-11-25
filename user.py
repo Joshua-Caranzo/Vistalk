@@ -398,7 +398,7 @@ def get_Users():
         SELECT v.*, u.name, u.email, u.imagePath
         FROM vista v
         INNER JOIN user u ON u.userId = v.userPlayerId
-        WHERE (%s = False or u.isActive = 1) AND u.Isplayer = TRUE AND (%s = False OR v.isPremium = 1)
+        WHERE (%s = True or u.isActive = 1) AND u.Isplayer = TRUE AND (%s = False OR v.isPremium = 1)
     """
     
     values = [showInactive, isShowSubscriber]
