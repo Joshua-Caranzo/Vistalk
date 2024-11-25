@@ -75,7 +75,7 @@ def get_Sections():
     langID = request.args.get('languageID')
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    query = "SELECT * FROM section WHERE languageID = %s and isActive = true"
+    query = "SELECT * FROM section WHERE languageID = %s and isActive = true ORDER BY sectionNumber"
     values = (langID,)
     cursor.execute(query, values)
     sections = cursor.fetchall()
