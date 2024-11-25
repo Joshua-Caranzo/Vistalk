@@ -41,8 +41,8 @@ def get_report():
         try:
             # Validate dates
             start_date = datetime.strptime(startDate, '%Y-%m-%d')
-            end_date = datetime.strptime(endDate, '%Y-%m-%d') + timedelta(days=1) - timedelta(seconds=1)
-            query += " AND ur.reportDate BETWEEN %s AND %s"
+            end_date = datetime.strptime(endDate, '%Y-%m-%d')
+            query += " AND u.reportDate >= %s AND u.reportDate < %s"
             values.extend([start_date, end_date])
         except ValueError:
             return jsonify({
