@@ -71,7 +71,7 @@ def get_feedback():
         count_values.extend([likePattern, likePattern, likePattern])
     
     if startDate and endDate:
-        count_query += " AND uf.feedbackDate BETWEEN %s AND %s"
+        count_query += " AND uf.feedbackDate >= %s AND uf.feedbackDate < %s"
         count_values.extend([start_date, end_date])
 
     cursor.execute(count_query, tuple(count_values))
