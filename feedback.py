@@ -34,9 +34,9 @@ def get_feedback():
         try:
             # Validate dates
             start_date = datetime.strptime(startDate, '%Y-%m-%d')
-            end_date = datetime.strptime(endDate, '%Y-%m-%d') + timedelta(days=1) - timedelta(seconds=1)
+            end_date = datetime.strptime(endDate, '%Y-%m-%d')
 
-            query += " AND uf.feedbackDate BETWEEN %s AND %s"
+            query += "AND uf.feedbackDate >= %s AND uf.feedbackDate < %s"
             values.extend([start_date, end_date])
         except ValueError:
             return jsonify({
