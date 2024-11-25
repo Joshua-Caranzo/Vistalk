@@ -77,7 +77,7 @@ def get_report():
         count_values.extend([likePattern, likePattern, likePattern])
     
     if startDate and endDate:
-        count_query += " AND ur.reportDate BETWEEN %s AND %s"
+        count_query += " AND ur.reportDate >= %s AND ur.reportDate < %s"
         count_values.extend([start_date, end_date])
 
     cursor.execute(count_query, tuple(count_values))
